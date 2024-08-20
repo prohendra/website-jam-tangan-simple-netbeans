@@ -1,0 +1,49 @@
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/contact")
+public class ContactServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Forward request ke halaman contact.jsp
+        request.getRequestDispatcher("/contact.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Ambil parameter dari form
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String message = request.getParameter("message");
+
+        // Debugging untuk memeriksa nilai parameter
+        System.out.println("Name: " + name);
+        System.out.println("Email: " + email);
+        System.out.println("Message: " + message);
+
+        // Penanganan jika parameter email atau message null atau kosong
+        if (email == null || email.isEmpty()) {
+            request.setAttribute("error", "Email is required.");
+            request.getRequestDispatcher("/contact.jsp").forward(request, response);
+            return;
+        }
+
+        if (message == null || message.isEmpty()) {
+            request.setAttribute("error", "Message is required.");
+            request.getRequestDispatcher("/contact.jsp").forward(request, response);
+            return;
+        }
+
+        // Logika untuk menangani data yang dikirim, misalnya menyimpan ke database atau mengirim email
+
+        // Mengirim pesan sukses ke halaman contact.jsp
+        request.setAttribute("responseMessage", "Thank you for your message, " + name + "!");
+        request.getRequestDispatcher("/contact.jsp").forward(request, response);
+    }
+}
